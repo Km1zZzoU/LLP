@@ -18,8 +18,10 @@ j endlib
 .eqv tmp, t0
 
 .macro syscall %n
+mv tmp, a7
 li a7, %n
 ecall
+mv a7, tmp
 .end_macro
 
 .macro scanf
@@ -31,10 +33,10 @@ syscall 11
 .end_macro
 
 .macro println
-mv tmp, a0
+push a0
 li a0, 10
 syscall 11 #печатает перенос строки
-mv a0, tmp
+pop a0
 .end_macro
 
 .macro exit %ecode
