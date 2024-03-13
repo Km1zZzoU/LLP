@@ -172,7 +172,7 @@ checkonover:
   call take4bit
   addi a2, a2, 4
   
-  inside tmp, a0, 0, 10
+  inside tmp, a0, 0, 9
   addi a0, a0, 48
   bne tmp, zero, print
   addi a0, a0, 39

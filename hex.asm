@@ -15,7 +15,7 @@ startfunc:
 
   addi a0, a0, -48 #в а0 лежит число
 
-  inside tmp, a0, 0, 10    #proverka ot 0 do 9
+  inside tmp, a0, 0, 9    #proverka ot 0 do 9
   bne tmp, zero, skip
 
   inside tmp, a0, 17, 22   #proverka ot A do F 
@@ -33,21 +33,22 @@ skip:
   call addrightint
   j startfunc
 endfunc:
+  mv a0, t6
   pop ra
   ret
   
 plushex: # a0 = a1 + a2
   add a0, a1, a2
-  j endcalchex
+  ret
 minushex: # a0 = a1 - a2
   sub a0, a1, a2
-  j endcalchex
+  ret
 orhex:
   or a0, a1, a2
-  j endcalchex
+  ret
 andhex:
   and a0, a1, a2
-  j endcalchex 
+  ret
 
 
 endhex:

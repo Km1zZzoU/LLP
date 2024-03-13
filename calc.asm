@@ -1,12 +1,12 @@
 
-.include "baselib.asm"
+.include "hex.asm"
   
 main:
   println
   call scanint16
-  mv s1, t6
+  mv s1, a0
   call scanint16
-  mv s2, t6
+  mv s2, a0
   
   scanf # читаем че делаем
   mv a3, a0
@@ -16,12 +16,21 @@ main:
   
   # делаем
   li tmp, 43
-  beq a3, tmp, plushex
+  bne a3, tmp, skipplus
+  call plushex
+  j endcalchex
+skipplus:
   li tmp, 45
-  beq a3, tmp, minushex
+  bne a3, tmp, skipminus
+  call minushex
+skipminus:
   li tmp, 38
-  beq a3, tmp, andhex
+  bne a3, tmp, skipand
+  call andhex
+  j endcalchex
+skipand:
   li tmp, 124
-  beq a3, tmp, orhex
+  bne a3, tmp, endcalchex
+  call orhex
 endcalchex:
   call printint
