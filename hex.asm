@@ -37,18 +37,4 @@ endfunc:
   pop ra
   ret
   
-plushex: # a0 = a1 + a2
-  add a0, a1, a2
-  ret
-minushex: # a0 = a1 - a2
-  sub a0, a1, a2
-  ret
-orhex:
-  or a0, a1, a2
-  ret
-andhex:
-  and a0, a1, a2
-  ret
-
-
 endhex:

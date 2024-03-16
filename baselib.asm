@@ -140,6 +140,11 @@ addi sp, sp, -4
 sw %r, 0(sp)
 .end_macro
 
+.macro seek %r
+pop %r
+push %r
+.end_macro
+
 addrightint:
   slli t6, t6, 4 #сдвигаем разряд влево (* 2^4)
   add t6, t6, a0

@@ -1,6 +1,6 @@
 
-.include "bcd.asm"
-
+.include "hex.asm"
+.globl main
 main:
   println
   call scanint10
