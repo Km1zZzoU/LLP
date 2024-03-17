@@ -1,5 +1,5 @@
 
-.include "hex.asm"
+.include "bcd.asm"
 .globl main
 main:
   println
