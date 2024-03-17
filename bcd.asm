@@ -28,7 +28,8 @@ skipminus:
   bne tmp, zero, skipscanint10
   j startscanint10
 skipscanint10:
-  call addrightint
+  slli t6, t6, 4 #сдвигаем разряд влево (* 2^4)
+  add t6, t6, a0
   j startscanint10
 endfuncscanint10:
   pop tmp

@@ -7,6 +7,11 @@ slli tmp, tmp, 31
 and %r, %x, tmp
 .end_macro
 
+.macro unsign %x
+slli %x, %x, 1
+srli %x, %x, 1
+.end_macro
+
 muldec: #a0 = a1 * a2
   push ra
   

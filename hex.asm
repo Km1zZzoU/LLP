@@ -30,7 +30,8 @@ skipSMALL:
 skipBIG:
   addi a0, a0, -7
 skip:
-  call addrightint
+  slli t6, t6, 4 #сдвигаем разряд влево (* 2^4)
+  add t6, t6, a0
   j startfunc
 endfunc:
   mv a0, t6
