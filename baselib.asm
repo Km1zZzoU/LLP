@@ -1,5 +1,3 @@
-
-j endlib
 #далее будут описаны самые
 #   базовые конструкции
 #---------------------------------------
@@ -45,19 +43,12 @@ syscall 93
 .end_macro
 
 .macro no %x
-not %x, %x
-andi %x, %x, 1
+xori %x, %x, 1
 .end_macro
 
 .macro eq %x %y %z # x = (y == z)
-sub t1, %y, %z
-beq t1, zero, eq
-noeq:
-li %x, 0
-j endmacro
-eq:
-li %x, 1
-endmacro:
+sub %x, %y, %z
+seqz %x, %x
 .end_macro
 
 .macro noeq %x %y %z # x = (y != z) 
@@ -67,14 +58,7 @@ no %x
 
 .macro eqi %x %y %zi # x = (y == zi)
 li tmp, %zi
-sub t5, %y, tmp
-beq t5, zero, eqi
-noeqi:
-li %x, 0
-j endmacro
-eqi:
-li %x, 1
-endmacro:
+eq %x, %y, tmp
 .end_macro
 
 .macro noeqi %x %y %zi # x = (y != zi) 
@@ -82,51 +66,34 @@ eqi %x, %y, %zi
 no %x
 .end_macro
 
-.macro more %x %y %z # x = y > z
-slt t1, %y, %z  # t1 = y < z
-no t1           # t1 = y >= z
-noeq t2, %y, %z # t2 = (y != z)
-and %x, t1, t2
+.macro sgti %x %y %zi # x = y > zi
+li tmp, %zi
+sgt %x, %y, tmp
 .end_macro
 
-.macro morei %x %y %zi # x = y > zi
-slti t1, %y, %zi  # t1 = y < z
-no t1             # t1 = y >= z
-noeqi t2, %y, %zi  # t2 = (y != z)
-and %x, t1, t2
-.end_macro
-
-.macro less %x %y %z # x = y < z
+.macro sgteq %x %y %z # x = y >= z
 slt %x, %y, %z
-.end_macro
-
-.macro lessi %x %y %z # x = y < z
-slti %x, %y, %z
-.end_macro
-
-.macro moreeq %x %y %z # x = y >= z
-less %x, %y, %z
 no %x
 .end_macro
 
-.macro moreeqi %x %y %zi # x = y >= z
-lessi %x, %y, %zi
+.macro sgteqi %x %y %zi # x = y >= z
+slti %x, %y, %zi
 no %x
 .end_macro
 
-.macro lesseq %x %y %z # x = y <= z
-more %x, %y, %z,
+.macro slteq %x %y %z # x = y <= z
+sgt %x, %y, %z,
 no %x
 .end_macro
 
-.macro lesseqi %x %y %zi # x = y <= z
-morei %x %y %zi
+.macro slteqi %x %y %zi # x = y <= z
+sgti %x %y %zi
 no %x
 .end_macro
 
 .macro inside %r %x %yi %zi
-moreeqi t3, %x, %yi
-lesseqi t4, %x, %zi
+sgteqi t3, %x, %yi
+slteqi t4, %x, %zi
 and %r, t3, t4
 .end_macro
 
@@ -141,8 +108,26 @@ sw %r, 0(sp)
 .end_macro
 
 .macro seek %r
-pop %r
-push %r
+lw %r, 0(sp)
+.end_macro
+
+.macro sign %r %x
+li tmp, 1
+slli tmp, tmp, 31
+and %r, %x, tmp
+.end_macro
+
+.macro unsign %x
+slli %x, %x, 1
+srli %x, %x, 1
+.end_macro
+
+.macro incp %x
+addi %x, %x 1
+.end_macro
+
+.macro incm %x
+addi %x, %x -1
 .end_macro
 
 addrightint:
@@ -187,5 +172,3 @@ print:
 endprintint:
   pop ra
   ret
-  
-endlib:

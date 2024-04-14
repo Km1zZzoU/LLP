@@ -1,4 +1,6 @@
 
+.include "baselib.asm"
+.include "mulreg.asm"
 .include "dec.asm"
 
 plusdec:

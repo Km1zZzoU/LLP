@@ -44,7 +44,10 @@ skipminus:
   j endcalchex
 skipand:
   li tmp, 124
-  bne a3, tmp, endcalchex
+  bne a3, tmp, error
   call orhex
+  j endcalchex
+error:
+  exit 0
 endcalchex:
   call printint

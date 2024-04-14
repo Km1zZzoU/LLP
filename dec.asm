@@ -1,110 +1,10 @@
-j enddec
-.include "baselib.asm"
 
-.macro sign %r %x
-li tmp, 1
-slli tmp, tmp, 31
-and %r, %x, tmp
-.end_macro
 
-.macro unsign %x
-slli %x, %x, 1
-srli %x, %x, 1
-.end_macro
-
-muldec: #a0 = a1 * a2
-  push ra
-  
-  sign a3, a1
+mul10: #a0 = a1 * 10
+  slli a0, a1, 3
   slli a1, a1, 1
-  srli a1, a1, 1
-  sign a4, a2
-  slli a2, a2, 1
-  srli a2, a2, 1
-  
-  add a3, a3, a4
-  push a3
-  li a0, 0
-L1:
-  beq a1, zero, L2
-  add a0, a0, a2
-  addi a1, a1, -1
-  j L1
-
-L2:
-  slli a0, a0, 1
-  srli a0, a0, 1
-  pop a3
-  add a0, a0, a3
-  pop ra
-  ret
-
-
-divdec: #a0 = a1 // a2
-  push ra
-  sign a3, a1
-  slli a1, a1, 1
-  srli a1, a1, 1
-  sign a4, a2
-  slli a2, a2, 1
-  srli a2, a2, 1
-  add a3, a3, a4
-  push a3
-  li a3, 0
-checkdivdec:
-   less tmp, a1, a2
-   bne tmp, zero, enddivdec
-   sub a1, a1, a2
-   addi a3, a3, 1
-   j checkdivdec
-enddivdec:
-  mv a0, a3
-  pop a3
-  slli a0, a0, 1
-  srli a0, a0, 1
-  add a0, a0, a3  
-  pop ra
-  ret
-
-recdiv10:
-  push ra
-  push a1
-  
-  li tmp, 100
-  bge a1, tmp, rec
-  li a2, 10
-  call divdec
-  pop ra
-  pop ra
-  ret
-rec:
-  srli a1, a1, 1
-  call recdiv10
-  pop a1
-  srli a1, a1, 2
-  sub a0, a1, a0
-  srli a0, a0, 1
-  pop ra 
-  ret
-
-moddec: #a0 = a1 % a2 
-  push ra
-  slli a1, a1, 1
-  srli a1, a1, 1
-  slli a2, a2, 1
-  srli a2, a2, 1 
-  push a1
-  push a2
-  call divdec
-  mv a1, a0
-  pop a2
-  push a2
-  call muldec
-  pop a1
-  pop a1
-  sub a0, a1, a0 
-  pop ra
-  ret
+  add a0, a0, a1
+ret
 
 scandec:
   push ra
@@ -128,10 +28,12 @@ L4:
   inside tmp, a0, 0, 10
   beqz tmp, L3
   
-  mv a2, a5 #сохраняем то, что считали
-  mv a5, a0 #новая цифра в а5 
-  li a1, 10
-  call muldec
+  mv tmp, a0
+  mv a1, a5
+  mv a5, tmp
+  #к этому моменту все что было считано лежит в а1
+  #а считанная цифра в а5 
+  call mul10
   add a5, a5, a0
   j L3
   
@@ -186,4 +88,83 @@ endprintdec:
   pop ra
   ret
 
-enddec:
+muldec:
+	push ra
+	sign t1, a1
+	sign t2, a2
+	add a0, t1, t2
+	push a0
+	unsign a1
+	unsign a2
+	call mulreg
+	unsign a0
+	pop tmp
+	add a0, a0, tmp
+	pop ra
+	ret
+
+divdec: #a0 = a1 // a2
+  push ra
+  sign a3, a1
+  slli a1, a1, 1
+  srli a1, a1, 1
+  sign a4, a2
+  slli a2, a2, 1
+  srli a2, a2, 1
+  add a3, a3, a4
+  push a3
+  li a3, 0
+checkdivdec:
+   slt tmp, a1, a2
+   bne tmp, zero, enddivdec
+   sub a1, a1, a2
+   addi a3, a3, 1
+   j checkdivdec
+enddivdec:
+  mv a0, a3
+  pop a3
+  slli a0, a0, 1
+  srli a0, a0, 1
+  add a0, a0, a3  
+  pop ra
+  ret
+
+recdiv10:
+  push ra
+  push a1
+  
+  li tmp, 100
+  bge a1, tmp, rec
+  li a2, 10
+  call divdec
+  pop ra
+  pop ra
+  ret
+rec:
+  srli a1, a1, 1
+  call recdiv10
+  pop a1
+  srli a1, a1, 2
+  sub a0, a1, a0
+  srli a0, a0, 1
+  pop ra 
+  ret
+
+moddec: #a0 = a1 % a2 
+  push ra
+  slli a1, a1, 1
+  srli a1, a1, 1
+  slli a2, a2, 1
+  srli a2, a2, 1 
+  push a1
+  push a2
+  call divdec
+  mv a1, a0
+  pop a2
+  push a2
+  call muldec
+  pop a1
+  pop a1
+  sub a0, a1, a0 
+  pop ra
+  ret

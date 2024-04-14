@@ -1,8 +1,6 @@
 
 .include "baselib.asm"
 
-j endhex
-
 scanint16: #в t6 закидывает все, что вводится с клавиатуры до enter
   push ra
   
@@ -23,8 +21,7 @@ startfunc:
 
   inside tmp, a0, 49, 54           #proverka ot a do f
   bne tmp, zero, skipSMALL
-  j startfunc
-
+  exit 1
 skipSMALL:
   addi a0, a0, -32
 skipBIG:
@@ -37,5 +34,3 @@ endfunc:
   mv a0, t6
   pop ra
   ret
-  
-endhex:

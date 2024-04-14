@@ -20,4 +20,5 @@ L1:
   mv a0, s1
   call mod10bcd
 enddivmod10:
+  println
   call printint
