@@ -20,20 +20,20 @@ rif:
 	sub rdi,          [rsp+24]    ;take len
 	mov r14,          rdi
 
-	mov r13,     rsp
-	and rsp,     -16
-	mov rax,     2        ;for syscall open
-	mov rdi,     r15      ;filename
-	mov rsi,     O_RDONLY
+	mov r13,          rsp
+	and rsp,          -16
+	mov rax,          2        ;for syscall open
+	mov rdi,          r15      ;filename
+	mov rsi,          O_RDONLY
 
 	syscall
 
-	mov rdi,     rax      ;mov fd
-	mov rsi,     buf      ;for read
-	mov rdx,     limit    ;set count
-	mov rax,     0        ;for syscall read
+	mov rdi,          rax      ;mov fd
+	mov rsi,          buf      ;for read
+	mov rdx,          limit    ;set count
+	mov rax,          0        ;for syscall read
 
 	syscall
 
-	mov rsp,     r13
+	mov rsp,          r13
 	ret

@@ -25,8 +25,8 @@ _start:
 
 	syscall
 
-	pop rsi
-	call printdec
+	pop          rsi
+	call         printdec
 
 	mov rax,     60
 	mov rdi,     0
